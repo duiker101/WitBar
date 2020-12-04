@@ -1,0 +1,28 @@
+﻿<Window x:Class="App.ManageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:App"
+        mc:Ignorable="d"
+        Title="ManageWindow" Height="459.336" Width="790.664">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ListBox Grid.Row="0" Grid.Column="0" x:Name="scriptsBox" />
+
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" />
+            <Button Content="Remove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click_1" />
+        </StackPanel>
+
+    </Grid>
+</Window>

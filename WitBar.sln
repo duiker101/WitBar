@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{F5CCB0EE-5478-487A-8163-B8499B488981}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDebug", "App.Debug\AppDebug.csproj", "{96C403F6-1FAC-4A34-A1E3-E1BDEC0A9166}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDebug", "AppDebug\AppDebug.csproj", "{96C403F6-1FAC-4A34-A1E3-E1BDEC0A9166}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,13 +3,8 @@ using App;
 
 namespace Tests
 {
-    public class Tests
+    public class ParserTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void TestSingleLine()
         {
@@ -18,7 +13,6 @@ namespace Tests
             Assert.AreEqual(root.children.Count, 1);
             Assert.AreEqual(root.menu.Count, 0);
             Assert.AreEqual(root.children[0].text, "hello");
-            Assert.Pass();
         }
 
         [Test]
@@ -31,7 +25,6 @@ there");
             Assert.AreEqual(root.menu.Count, 0);
             Assert.AreEqual(root.children[0].text, "hello");
             Assert.AreEqual(root.children[1].text, "there");
-            Assert.Pass();
         }
 
         [Test]
@@ -45,7 +38,6 @@ there");
             Assert.AreEqual(root.menu.Count, 1);
             Assert.AreEqual(root.children[0].text, "hello");
             Assert.AreEqual(root.menu[0].text, "there");
-            Assert.Pass();
         }
 
         [Test]
@@ -60,7 +52,6 @@ there
             Assert.AreEqual(root.children[0].text, "hello");
             Assert.AreEqual(root.menu[0].text, "there");
             Assert.AreEqual(root.menu[0].children[0].text, "b");
-            Assert.Pass();
         }
 
         [Test]
@@ -75,7 +66,6 @@ b
             Assert.AreEqual(root.menu.Count, 1);
             Assert.AreEqual(root.menu[0].children.Count, 1);
             Assert.AreEqual(root.menu[0].children[0].children.Count, 1);
-            Assert.Pass();
         }
 
         [Test]
@@ -114,26 +104,64 @@ there
             Assert.AreEqual(root.menu[0].text, "there");
             Assert.AreEqual(root.menu[0].children[0].text, "b");
             Assert.AreEqual(root.menu[0].children[1].isSeparator, true);
-            Assert.Pass();
         }
 
 
         [Test]
         public void TestFull()
         {
-            RootEntry root = OutputParser.parse(@"G $175|
+            RootEntry root = OutputParser.parse(@"a
 ---
-Time: 10.3|
+b
 ---
-Month|
---$175|
+c
+--d
 -----
---01 Tue        $46.92|
---03 Thu        $127.65|");
+--e
+--f");
             Assert.AreEqual(root.children.Count, 1);
             Assert.AreEqual(3, root.menu.Count);
-            Assert.Pass();
         }
 
+        [Test]
+        public void TestParameters()
+        {
+            RootEntry root = OutputParser.parse(@"a|color=#ff0");
+            Assert.AreEqual(1, root.children.Count);
+            Assert.AreEqual("#ff0", root.children[0].color);
+        }
+
+        [Test]
+        public void TestTokenizerSimple()
+        {
+            var root = OutputParser.Tokenize(@"a=b");
+            Assert.AreEqual("b", root["a"]);
+        }
+
+        [Test]
+        public void TestTokenizerTwoKeys()
+        {
+            var root = OutputParser.Tokenize(@"a=b c=d");
+            Assert.AreEqual("b", root["a"]);
+        }
+
+        [Test]
+        public void TestTokenizerWithQuotes()
+        {
+            var root = OutputParser.Tokenize("a=b c=d f=\"a a\"");
+            Assert.AreEqual("b", root["a"]);
+            Assert.AreEqual("d", root["c"]);
+            Assert.AreEqual("a a", root["f"]);
+        }
+
+        [Test]
+        public void TestTokenizerWithSingleQuotes()
+        {
+            var root = OutputParser.Tokenize("a=b f='a a' c=d");
+            Assert.AreEqual("b", root["a"]);
+            Assert.AreEqual("d", root["c"]);
+            Assert.AreEqual("a a", root["f"]);
+        }
     }
+
 }

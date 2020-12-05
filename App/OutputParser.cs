@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace App
 {
@@ -10,6 +11,7 @@ namespace App
         public bool isSeparator = false;
         public int depth = 0;
         public String text = "";
+        public String color = null;
     }
 
     public class Entry : Line
@@ -55,13 +57,17 @@ namespace App
             var indexOfFirstSeparator = line.IndexOf("|");
             if (indexOfFirstSeparator >= 0)
             {
-
                 entry.text = line.Substring(0, indexOfFirstSeparator);
+                var parameters = Tokenize(line.Substring(indexOfFirstSeparator + 1, line.Length - indexOfFirstSeparator - 1));
+
+                if (parameters.ContainsKey("color"))
+                    entry.color = parameters["color"];
             }
             else
             {
                 entry.text = line;
             }
+
 
             return entry;
         }
@@ -110,38 +116,69 @@ namespace App
                     }
 
                     stack.First().Add(entry);
-                    //var currentDepth = 0;
-                    //if (stack.Count > 0)
-                    //    currentDepth = stack.First().depth;
-                    //if (entry.depth < currentDepth)
-                    //{
-                    //    for (var i = entry.depth; i > currentDepth; i--)
-                    //    {
-                    //        stack.Pop();
-                    //    }
-                    //    stack.First().children.Add(entry);
-                    //}
-                    //else if (entry.depth > currentDepth)
-                    //{
-                    //    stack.First().children.Add(entry);
-                    //    stack.Push(entry);
-                    //}
-                    //else if (entry.depth == 0)
-                    //{
-                    //    if (stack.Count > 0)
-                    //        stack.Pop();
-                    //    stack.Push(entry);
-                    //    result.menu.Add(entry);
-                    //}
-                    //else if (stack.Count > 0)
-                    //{
-                    //    stack.First().children.Add(entry);
-                    //}
                 }
                 parent = entry;
             }
 
             return result;
         }
+
+
+        public static Dictionary<String, String> Tokenize(String input)
+        {
+            var res = new Dictionary<String, String>();
+
+
+            string[] quotes = { "'", "\"" };
+            string[] separators = { "=", ":" };
+            string[] space = { " " };
+            int nextIndex = findIndexOf(input, separators);
+
+            while (nextIndex >= 0)
+            {
+                var key = input.Substring(0, nextIndex);
+                input = input.Substring(nextIndex + 1, input.Length - nextIndex - 1);
+
+                if (findIndexOf(input, quotes) == 0)
+                {
+                    input = input.Substring(1, input.Length - 1);
+                    var indexOfLastQuote = findIndexOf(input, quotes);
+                    var value = input.Substring(0, indexOfLastQuote);
+                    res.Add(key.Trim(), value);
+
+                    if (indexOfLastQuote + 1 < input.Length)
+                        input = input.Substring(indexOfLastQuote + 1, input.Length - indexOfLastQuote - 1);
+                }
+                else
+                {
+                    var indexOfSpace = findIndexOf(input, space);
+                    indexOfSpace = indexOfSpace >= 0 ? indexOfSpace : input.Length;
+                    var value = input.Substring(0, indexOfSpace);
+                    res.Add(key.Trim(), value);
+
+                    if (indexOfSpace + 1 < input.Length)
+                        input = input.Substring(indexOfSpace + 1, input.Length - indexOfSpace - 1);
+                }
+
+                nextIndex = findIndexOf(input, separators);
+            }
+
+            return res;
+        }
+
+        private static int findIndexOf(string input, string[] search)
+        {
+            var res = -1;
+
+            foreach (var s in search)
+            {
+                var i = input.IndexOf(s);
+                if (i >= 0 && (i < res || res < 0))
+                    res = i;
+            }
+
+            return res;
+        }
+
     }
 }
